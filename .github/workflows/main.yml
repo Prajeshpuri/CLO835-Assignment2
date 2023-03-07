@@ -6,10 +6,18 @@ on:
  
   workflow_dispatch:
 
+env:
+  APPLICATION_ECR: application-repo
+  DATABASE_ECR: database-repo
+  WORKING_DIR: WEB-APP/
+  AWS_REGION: us-east-1
+  
 jobs:
   build:
     runs-on: ubuntu-latest
- 
+    defaults:
+      run:
+        working-directory: ${{env.WORKING_DIR}} 
     steps:
       - uses: actions/checkout@v3
       
@@ -20,21 +28,19 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-          AWS_REGION: us-east-1   
+          AWS_REGION: ${{ env.AWS_REGION }}  
           
           
       - name: Building Docker Images for mysql and webapp and Pushing to ECR
         env:
          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          cd WEB-APP/  
-          ls -ltra
-                    
+         IMAGE_TAG: "latest"
+        run: |                    
           # Building Docker image for mysql
-          docker build -f Dockerfile_mysql -t $ECR_REGISTRY/application-repo:v1.0 .
-          docker push $ECR_REGISTRY/application-repo:v1.0
+          docker build -f Dockerfile_mysql -t $ECR_REGISTRY/${DATABASE_ECR}:${IMAGE_TAG} .
+          docker push $ECR_REGISTRY/${DATABASE_ECR}:${IMAGE_TAG}
           
           # Building docker for webapp
-          docker build -f Dockerfile -t $ECR_REGISTRY/database-repo:v1.0 .
-          docker push $ECR_REGISTRY/database-repo:v1.0
+          docker build -f Dockerfile -t $ECR_REGISTRY/${APPLICATION_ECR}:${IMAGE_TAG} .
+          docker push $ECR_REGISTRY/${APPLICATION_ECR}:${IMAGE_TAG}
           docker images
