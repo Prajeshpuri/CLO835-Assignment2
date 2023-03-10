@@ -23,5 +23,3 @@ spec:
               value: pass
           ports:
             - containerPort: 3306
-      imagePullSecrets:
-          - name: cred
