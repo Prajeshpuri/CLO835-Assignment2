@@ -1,7 +1,8 @@
 terraform
 # Local .terraform directories
 **/.terraform/*
-
+Kubernetes/application/assign2
+Kubernetes/database/assign2
 # .tfstate files
 *.tfstate
 *.tfstate.*
