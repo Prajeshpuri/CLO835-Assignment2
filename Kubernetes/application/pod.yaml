@@ -3,8 +3,8 @@ kind: Pod
 metadata:
   name: application
   labels:
-    app.kubernetes.io/name: employees
-    app.kubernetes.io/component: frontend
+    app: employees
+    component: frontend
 spec:
   containers:
     - name: application-container
@@ -15,7 +15,7 @@ spec:
         - name: DBUSER
           value: root
         - name: DBHOST
-          value: "mysql.backend.svc.cluster.local"
+          value: "mysql.database.svc.cluster.local"
         - name: DBPORT
           value: "3306"
       ports:
